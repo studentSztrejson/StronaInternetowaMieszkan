@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local tool settings (personal, not shared)
+.claude/settings.local.json
+
+# OS / editor temporary files
+Thumbs.db
+desktop.ini
+*.log

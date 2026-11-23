@@ -1,0 +1,181 @@
+/**
+ * Teksty interfejsu – język polski.
+ * Ten plik definiuje strukturę słownika; en.ts musi mieć identyczne klucze.
+ * Znaczniki {name}, {n}, {total} itp. są podmieniane funkcją `t()` z lib/format.ts.
+ */
+export const pl = {
+  meta: {
+    title: "Premium Blue Apartments — apartamenty w Warszawie",
+    apartmentTitle: "{name} — Premium Blue Apartments",
+    description:
+      "Premium Blue Apartments — dwa apartamenty na wynajem krótkoterminowy w Warszawie: Grzybowska 37 i Ludwiki 4A.",
+  },
+  common: {
+    skipToContent: "Przejdź do treści",
+    pending: "Do uzupełnienia",
+    newTab: "(otwiera się w nowej karcie)",
+  },
+  nav: {
+    label: "Nawigacja główna",
+    apartment: "Apartament",
+    amenities: "Udogodnienia",
+    location: "Lokalizacja",
+    reviews: "Opinie",
+    about: "O nas",
+    faq: "FAQ",
+    terms: "Regulamin",
+    contact: "Kontakt",
+  },
+  header: {
+    contactCta: "Kontakt",
+    menuOpen: "Otwórz menu",
+    menuClose: "Zamknij menu",
+    languageLabel: "Wybór języka",
+    homeLabel: "Premium Blue Apartments — strona główna",
+  },
+  languages: {
+    pl: "Polski",
+    en: "English",
+  },
+  hero: {
+    eyebrow: "Warszawa · Wynajem krótkoterminowy",
+    title: "Dwa adresy w Warszawie.",
+    titleAccent: "Jeden standard.",
+    subtitle:
+      "Wybierz apartament, aby zobaczyć zdjęcia, udogodnienia i szczegóły lokalizacji.",
+    switcherLabel: "Wybierz apartament",
+  },
+  gallery: {
+    regionLabel: "Zdjęcia apartamentu {name}",
+    showAll: "Pokaż wszystkie zdjęcia",
+    openPhoto: "Otwórz zdjęcie {n} z {total}",
+    dialogLabel: "Galeria zdjęć — {name}",
+    close: "Zamknij galerię",
+    previous: "Poprzednie zdjęcie",
+    next: "Następne zdjęcie",
+    counter: "Zdjęcie {n} z {total}",
+    thumbnails: "Miniatury zdjęć",
+    thumbnail: "Pokaż zdjęcie {n}",
+    placeholderTitle: "Miejsce na zdjęcie",
+    placeholderNote: "Placeholder — zastąp prawdziwą fotografią",
+  },
+  overview: {
+    eyebrow: "Apartament",
+    priceFrom: "od",
+    perNight: "noc",
+    priceOnRequest: "Cena na zapytanie",
+    availabilityCta: "Zapytaj o dostępność",
+    bookingCta: "Oferta na Booking.com",
+    descriptionPending: "Opis apartamentu zostanie wkrótce uzupełniony.",
+    detailsLabel: "Parametry apartamentu",
+    details: {
+      maxGuests: "Goście (maks.)",
+      bedrooms: "Sypialnie",
+      beds: "Łóżka",
+      bathrooms: "Łazienki",
+      areaM2: "Powierzchnia",
+    },
+    detailsPending: "Liczba gości, sypialni i metraż zostaną uzupełnione.",
+    ratingLabel: "Ocena na Booking.com",
+    ratingPending: "Ocena w trakcie weryfikacji",
+  },
+  amenities: {
+    eyebrow: "Udogodnienia",
+    title: "Wszystko, czego potrzebujesz na miejscu",
+    intro: "Wyposażenie apartamentu {name}.",
+    listLabel: "Lista udogodnień",
+    pendingTitle: "Lista udogodnień w przygotowaniu",
+    pendingText:
+      "Pełna lista wyposażenia tego apartamentu zostanie opublikowana wkrótce.",
+  },
+  location: {
+    eyebrow: "Lokalizacja",
+    title: "Gdzie się zatrzymasz",
+    addressLabel: "Adres",
+    neighborhoodLabel: "Okolica",
+    neighborhoodPending: "Opis okolicy i najbliższych punktów zostanie uzupełniony.",
+    openInMaps: "Otwórz w Google Maps",
+    mapLabel: "Mapa",
+    mapPlaceholder: "Tutaj wyświetli się mapa",
+    mapLoad: "Pokaż mapę",
+    mapConsent: "Mapa zostanie załadowana z serwisu Google Maps.",
+    mapTitle: "Mapa — {address}",
+  },
+  reviews: {
+    eyebrow: "Opinie",
+    title: "Ocena gości",
+    text: "Prezentujemy wyłącznie zweryfikowaną ocenę obiektu z serwisu Booking.com. Pełną treść opinii znajdziesz bezpośrednio w ofercie apartamentu.",
+    scoreLabel: "Ocena na Booking.com",
+    outOf: "na 10",
+    reviewCount: {
+      one: "{count} opinia",
+      few: "{count} opinie",
+      many: "{count} opinii",
+      other: "{count} opinii",
+    },
+    verifiedAt: "Stan na {date}",
+    scorePending: "Ocena zostanie dodana po weryfikacji",
+    bookingCta: "Zobacz opinie na Booking.com",
+    bookingPending: "Link do oferty na Booking.com wkrótce",
+    airbnbCta: "Oferta na Airbnb",
+  },
+  contact: {
+    eyebrow: "Kontakt",
+    title: "Zapytaj o pobyt",
+    text: "Napisz lub zadzwoń — odpowiemy na pytania o dostępność, cenę i szczegóły pobytu.",
+    selectedApartment: "Wybrany apartament",
+    email: "E-mail",
+    phone: "Telefon",
+    whatsapp: "WhatsApp",
+    reserve: "Zapytaj o rezerwację",
+    reserveHint: "Wiadomość e-mail z gotowym szablonem zapytania",
+    pending: "Wkrótce dostępne",
+    pendingNote: "Dane kontaktowe zostaną opublikowane wkrótce.",
+    mailSubject: "Zapytanie o rezerwację — {name}",
+    mailBody:
+      "Dzień dobry,\n\nproszę o informację o dostępności apartamentu {name}.\n\nData przyjazdu:\nData wyjazdu:\nLiczba gości:\n\nPozdrawiam",
+    whatsappText: "Dzień dobry, proszę o informację o dostępności apartamentu {name}.",
+  },
+  about: {
+    eyebrow: "O nas",
+    title: "Butikowe apartamenty na krótki pobyt",
+    paragraphs: [
+      "Premium Blue Apartments to marka łącząca dwa apartamenty na wynajem krótkoterminowy w Warszawie — przy ul. Grzybowskiej 37 oraz przy ul. Ludwiki 4A.",
+      "Na tej stronie znajdziesz zdjęcia, opis i lokalizację każdego z nich, a także możliwość bezpośredniego kontaktu w sprawie rezerwacji.",
+    ],
+    storyPending: "Historia marki i informacje o gospodarzach zostaną uzupełnione.",
+    apartmentsLabel: "Nasze apartamenty",
+  },
+  faq: {
+    eyebrow: "FAQ",
+    title: "Najczęstsze pytania",
+    generalLabel: "Pytania ogólne",
+    specificLabel: "Apartament {name}",
+    answerPending: "Odpowiedź zostanie wkrótce uzupełniona.",
+  },
+  terms: {
+    eyebrow: "Regulamin",
+    title: "Regulamin pobytu",
+    intro:
+      "Szczegółowe zasady rezerwacji, pobytu i anulowania zostaną opublikowane w tym miejscu.",
+    chapterPending: "Treść w przygotowaniu",
+  },
+  footer: {
+    tagline: "Apartamenty na wynajem krótkoterminowy w Warszawie.",
+    apartments: "Apartamenty",
+    navigation: "Nawigacja",
+    contact: "Kontakt",
+    contactPending: "Dane kontaktowe wkrótce",
+    companyPending: "Dane właściciela zostaną uzupełnione.",
+    rights: "Wszelkie prawa zastrzeżone.",
+    backToTop: "Wróć na górę",
+  },
+  notFound: {
+    title: "Nie znaleziono strony",
+    text: "Strona, której szukasz, nie istnieje lub została przeniesiona.",
+    back: "Wróć na stronę główną",
+  },
+};
+
+/** Struktura słownika – wszystkie języki muszą jej odpowiadać. */
+export type Dictionary = typeof pl;

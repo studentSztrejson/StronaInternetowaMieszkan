@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Premium Blue Apartments
 
-## Getting Started
+Strona internetowa marki **Premium Blue Apartments**: dwa apartamenty na wynajem krótkoterminowy w Warszawie (Grzybowska 37 i Ludwiki 4A). Jedna strona z przełącznikiem apartamentów i języków (PL / EN).
 
-First, run the development server:
+Stack: Next.js 16 (App Router, Cache Components), React 19, TypeScript, Tailwind CSS 4. Bez backendu i bez dodatkowych bibliotek.
+
+## Wymagania
+
+- Node.js 20.9 lub nowszy (testowane na Node 26)
+- npm
+
+## Instalacja
+
+```bash
+npm install
+```
+
+## Uruchomienie
+
+Tryb deweloperski (z automatycznym odświeżaniem):
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otwórz http://localhost:3000. Adres `/` przekierowuje na `/pl/grzybowska-37`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Wersja produkcyjna lokalnie:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## Adresy URL
 
-To learn more about Next.js, take a look at the following resources:
+Wybrany język i apartament są zapisane w ścieżce, więc link do konkretnego widoku można skopiować:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Adres                | Widok                         |
+| -------------------- | ----------------------------- |
+| `/pl/grzybowska-37`  | polski, Grzybowska 37         |
+| `/pl/ludwiki-4a`     | polski, Ludwiki 4A            |
+| `/en/grzybowska-37`  | angielski, Grzybowska 37      |
+| `/en/ludwiki-4a`     | angielski, Ludwiki 4A         |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Sekcje mają kotwice, np. `/pl/ludwiki-4a#location`.
 
-## Deploy on Vercel
+## Kontrola jakości
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npx next typegen   # generuje typy tras (PageProps / LayoutProps), potrzebne przed tsc
+npx tsc --noEmit   # TypeScript
+npm run lint       # ESLint
+npm run build      # kompilacja produkcyjna
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Struktura projektu
+
+```
+app/
+  [lang]/layout.tsx               root layout (html lang, czcionka, metadane)
+  [lang]/[apartment]/page.tsx     strona apartamentu – składa wszystkie sekcje
+  [lang]/not-found.tsx            404 dla nieznanego apartamentu
+  global-not-found.tsx            404 dla nieznanych adresów
+  globals.css                     paleta kolorów, animacje, style bazowe
+components/
+  site-header.tsx                 nagłówek, menu mobilne, przełącznik PL/EN
+  gallery/                        siatka zdjęć + pełnoekranowy podgląd (lightbox)
+  sections/                       sekcje strony (hero, udogodnienia, lokalizacja, …)
+  map-panel.tsx                   panel mapy (ładowany po kliknięciu)
+  icons.tsx, amenity-icon.tsx     ikony SVG
+  ui.tsx                          przyciski, sekcje, znaczniki „do uzupełnienia”
+lib/
+  apartments.ts                   ← DANE APARTAMENTÓW
+  site.ts                         ← DANE KONTAKTOWE, FAQ, REGULAMIN
+  amenities.ts                    katalog udogodnień (PL/EN)
+  i18n/pl.ts, i18n/en.ts          teksty interfejsu
+public/apartments/<id>/           miejsce na zdjęcia
+```
+
+## Uzupełnianie danych
+
+Lista wszystkich brakujących informacji: [DATA_TO_FILL.md](DATA_TO_FILL.md).
+Kontekst projektu i zasady dla kolejnych prac: [CLAUDE.md](CLAUDE.md).

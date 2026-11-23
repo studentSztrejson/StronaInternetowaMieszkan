@@ -47,3 +47,13 @@ next-env.d.ts
 Thumbs.db
 desktop.ini
 *.log
+
+# apartment photo originals – only optimized .webp files are published
+# (originals are kept outside the project, see README → photos)
+/public/apartments/**/*.jpg
+/public/apartments/**/*.jpeg
+/public/apartments/**/*.JPG
+/public/apartments/**/*.JPEG
+/public/apartments/**/*.png
+/public/apartments/**/*.heic
+/public/apartments/**/*.HEIC

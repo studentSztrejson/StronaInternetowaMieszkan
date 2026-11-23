@@ -78,6 +78,57 @@ lib/
 public/apartments/<id>/           miejsce na zdjęcia
 ```
 
+## Jak wymienić zdjęcia apartamentu w przyszłości
+
+Galeria czyta zdjęcia **wyłącznie z listy w [lib/apartments.ts](lib/apartments.ts)** (`GRZYBOWSKA_37_PHOTOS`, `LUDWIKI_4A_PHOTOS`). Nie skanuje folderów, więc wymiana zdjęć nie wymaga zmian w komponentach.
+
+Obecne zdjęcia **Grzybowskiej 37 są tymczasowe** (niska rozdzielczość, pionowe) – do zastąpienia profesjonalną sesją.
+
+### 1. Gdzie umieścić nowe fotografie
+
+- **Oryginały** trzymaj **poza projektem**, np. `../photo-originals-backup/<id>/` (obok folderu projektu). Nie wrzucaj ich do `public/` – wszystko w `public/` jest publicznie dostępne.
+- **Wersje do publikacji** (WebP) trafiają do `public/apartments/<id>/` – robi to skrypt z kroku 2.
+- `<id>` to `grzybowska-37` lub `ludwiki-4a`.
+- Zalecane: zdjęcia **poziome** (3:2 lub 4:3), min. 2000 px szerokości, 15–25 sztuk.
+
+### 2. Jak je zoptymalizować
+
+```bash
+node scripts/optimize-photos.mjs grzybowska-37 ../photo-originals-backup/grzybowska-37-nowa-sesja
+```
+
+Skrypt dla każdego zdjęcia: konwertuje do WebP (jakość 82), zmniejsza dłuższy bok do maks. 2400 px (nigdy nie powiększa), zachowuje proporcje i kolorystykę, **usuwa metadane EXIF/XMP/IPTC (w tym GPS)** i sprawdza, że żadne nie zostały. Na końcu wypisuje gotowe wpisy z wymiarami do wklejenia w `lib/apartments.ts`. Skrypt niczego nie usuwa.
+
+Next.js (`next/image`) dodatkowo sam serwuje każdemu urządzeniu wersję w odpowiednim rozmiarze.
+
+### 3. Jak zmienić kolejność
+
+Kolejność wpisów na liście = kolejność w galerii. Przenieś linię wyżej lub niżej. Na desktopie w siatce widać zdjęcia 1–5, pozostałe w pełnoekranowym podglądzie.
+
+### 4. Jak ustawić zdjęcie główne
+
+Zdjęciem głównym jest **pierwszy wpis** na liście – przenieś wybrane zdjęcie na początek. Najlepiej sprawdza się najbardziej reprezentacyjne ujęcie salonu lub całego wnętrza.
+
+Każdy wpis ma też opis `alt` po polsku i angielsku – krótko, co widać na zdjęciu (dostępność i SEO).
+
+### 5. Jak usunąć stare zdjęcia
+
+1. Usuń ich wpisy z listy w `lib/apartments.ts` (przy wymianie całej sesji – zastąp całą listę).
+2. Usuń odpowiadające pliki `.webp` z `public/apartments/<id>/`.
+3. Sprawdź, że żaden wpis nie wskazuje na nieistniejący plik (krok 6 – uszkodzone zdjęcie widać od razu jako pusty kafelek).
+
+### 6. Jak sprawdzić poprawność
+
+```bash
+npx tsc --noEmit && npm run lint && npm run build && npm run start
+```
+
+Następnie na http://localhost:3000/pl/<id> sprawdź: siatkę 1 + 4 zdjęć, przycisk „Pokaż wszystkie zdjęcia (liczba)”, podgląd pełnoekranowy (strzałki ← →, Home/End, Escape), miniatury, widok na telefonie (karuzela) i przełączenie na drugi apartament.
+
+### Wymiana sesji jednym poleceniem dla Claude Code
+
+> Wymień wszystkie zdjęcia apartamentu Grzybowska 37 na nową sesję z folderu `../photo-originals-backup/grzybowska-37-nowa-sesja`. Postępuj według sekcji „Jak wymienić zdjęcia apartamentu w przyszłości” w README: zoptymalizuj zdjęcia skryptem, zaproponuj kolejność od najbardziej reprezentacyjnego wnętrza, napisz opisy alt PL/EN, zastąp listę w lib/apartments.ts, usuń stare pliki .webp Grzybowskiej, przetestuj galerię i nie rób commita.
+
 ## Uzupełnianie danych
 
 Lista wszystkich brakujących informacji: [DATA_TO_FILL.md](DATA_TO_FILL.md).

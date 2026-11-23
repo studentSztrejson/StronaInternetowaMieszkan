@@ -13,12 +13,51 @@ interface GalleryProps {
   labels: GalleryLabels;
 }
 
-/** Układ siatki zależny od liczby zdjęć (desktop). */
+/** Układ siatki zależny od liczby zdjęć (desktop). cols/rows/firstSpan służą do obliczenia `sizes`. */
 function gridLayout(count: number) {
-  if (count >= 5) return { grid: "grid-cols-4 grid-rows-2", first: "col-span-2 row-span-2" };
-  if (count >= 3) return { grid: "grid-cols-3 grid-rows-2", first: "col-span-2 row-span-2" };
-  if (count === 2) return { grid: "grid-cols-2 grid-rows-1", first: "" };
-  return { grid: "grid-cols-1 grid-rows-1", first: "" };
+  if (count >= 5) return { grid: "grid-cols-4 grid-rows-2", first: "col-span-2 row-span-2", cols: 4, rows: 2, firstSpan: 2 };
+  if (count >= 3) return { grid: "grid-cols-3 grid-rows-2", first: "col-span-2 row-span-2", cols: 3, rows: 2, firstSpan: 2 };
+  if (count === 2) return { grid: "grid-cols-2 grid-rows-1", first: "", cols: 2, rows: 1, firstSpan: 1 };
+  return { grid: "grid-cols-1 grid-rows-1", first: "", cols: 1, rows: 1, firstSpan: 1 };
+}
+
+/*
+ * Geometria siatki – musi odpowiadać klasom poniżej:
+ * Container (max-w-7xl = 1280px, px-8 = 2×32px), gap-2 (8px), h-[clamp(380px,62vh,600px)].
+ */
+const GRID_MAX_WIDTH = 1280;
+const GRID_PADDING = 64;
+const GRID_GAP = 8;
+const GRID_HEIGHT = "clamp(380px, 62vh, 600px)";
+const GRID_MAX_HEIGHT = 600;
+
+/**
+ * Atrybut `sizes` dla kafelka siatki.
+ *
+ * Kafelki mają `object-cover`, więc zdjęcie jest rysowane szerzej niż kafelek,
+ * gdy jego proporcje są „szersze” niż proporcje kafelka (np. zdjęcie 3:2 w prawie
+ * kwadratowym kafelku jest skalowane do wysokości). Rzeczywista szerokość rysowania to
+ * max(szerokość kafelka, wysokość kafelka × proporcje zdjęcia). Podanie samej szerokości
+ * kafelka powodowało wybór zbyt małego wariantu i powiększanie (rozmycie) zdjęcia.
+ */
+function tileSizes(item: GalleryItem, layout: ReturnType<typeof gridLayout>, span: number) {
+  const aspect = item.width && item.height ? item.width / item.height : 3 / 2;
+  const colFrac = span / layout.cols;
+  const rowFrac = span / layout.rows;
+  const fixedW = (GRID_PADDING + (layout.cols - 1) * GRID_GAP) * colFrac - (span - 1) * GRID_GAP;
+  const fixedH = (layout.rows - 1) * GRID_GAP * rowFrac - (span - 1) * GRID_GAP;
+
+  const width = `calc(min(100vw, ${GRID_MAX_WIDTH}px) * ${colFrac} - ${fixedW}px)`;
+  const height = `calc(${GRID_HEIGHT} * ${rowFrac} - ${fixedH}px)`;
+  const drawn = `max(${width}, calc(${height} * ${aspect.toFixed(3)}))`;
+
+  // Zapas dla przeglądarek bez obsługi max()/clamp() w `sizes`: rozmiar przy maksymalnej siatce.
+  const fallback = Math.round(
+    Math.max(GRID_MAX_WIDTH * colFrac - fixedW, (GRID_MAX_HEIGHT * rowFrac - fixedH) * aspect),
+  );
+  // Poniżej 768px siatka jest ukryta (md:block) – minimalny rozmiar, żeby np. po zwężeniu
+  // okna przeglądarka nie dociągała dużego wariantu dla niewidocznego zdjęcia.
+  return `(min-width: 768px) ${drawn}, (min-width: 768px) ${fallback}px, 64px`;
 }
 
 const TILE =
@@ -78,7 +117,7 @@ export function Gallery({ items, apartmentName, labels }: GalleryProps) {
                   item={item}
                   index={i}
                   labels={labels}
-                  sizes={i === 0 ? "(min-width: 1280px) 640px, 50vw" : "(min-width: 1280px) 320px, 25vw"}
+                  sizes={tileSizes(item, layout, i === 0 ? layout.firstSpan : 1)}
                   compact={i !== 0}
                   priority={i === 0}
                   className={TILE_MEDIA}

@@ -42,7 +42,10 @@ export function GalleryMedia({
       alt={item.alt}
       fill
       sizes={sizes}
-      preload={priority}
+      // Galeria renderuje wariant desktopowy i mobilny jednocześnie (jeden ukryty przez CSS).
+      // Zamiast `preload` (pobrałby zdjęcie dla obu wariantów) używamy wysokiego priorytetu
+      // przy leniwym ładowaniu – ukryty wariant nie pobiera wtedy obrazu.
+      fetchPriority={priority ? "high" : undefined}
       className={`${fit === "cover" ? "object-cover" : "object-contain"} ${className}`}
     />
   );

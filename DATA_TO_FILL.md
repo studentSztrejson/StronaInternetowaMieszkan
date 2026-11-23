@@ -81,26 +81,14 @@ Treść opinii nie będzie kopiowana – strona pokazuje tylko ocenę i link do 
 
 ## 3. Zdjęcia
 
-Dla każdego apartamentu: najlepiej **8–20 zdjęć**, poziomych, min. **2000 px** szerokości, JPG lub WebP. Pierwsze zdjęcie = zdjęcie główne.
+Stan na teraz:
 
-1. Skopiuj pliki do folderu:
-   - `public/apartments/grzybowska-37/`
-   - `public/apartments/ludwiki-4a/`
-2. Dodaj je w `lib/apartments.ts` w polu `photos`:
+- [x] **Ludwiki 4A** – 19 zdjęć z profesjonalnej sesji (gotowe).
+- [ ] **Grzybowska 37** – 13 zdjęć **tymczasowych** (576×768 px, pionowe). Potrzebna profesjonalna sesja: najlepiej 15–25 zdjęć **poziomych**, min. 2000 px szerokości.
 
-```ts
-photos: [
-  {
-    src: "/apartments/grzybowska-37/01-salon.jpg",
-    width: 2400,
-    height: 1600,
-    alt: { pl: "Salon z sofą i dużym oknem", en: "Living room with a sofa and a large window" },
-  },
-  // ...
-],
-```
+Instrukcja wymiany zdjęć: [README.md → „Jak wymienić zdjęcia apartamentu w przyszłości”](README.md#jak-wymienić-zdjęcia-apartamentu-w-przyszłości).
 
-`width` i `height` to wymiary pliku w pikselach. Opis `alt` powinien krótko mówić, co widać na zdjęciu (ważne dla dostępności i SEO). Placeholdery znikną automatycznie.
+Do sprawdzenia przez właściciela: kolejność zdjęć i wybór zdjęć głównych (zaproponowane na podstawie zawartości fotografii) oraz opisy `alt` w `lib/apartments.ts`.
 
 ## 4. FAQ ogólne – `lib/site.ts` (`GENERAL_FAQ`)
 

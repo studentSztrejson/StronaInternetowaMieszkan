@@ -82,7 +82,7 @@ export function Footer({ lang, dict, nav }: Omit<SectionProps, "apartment"> & { 
             <p>
               © {SITE.copyrightYear} {SITE.brand}. {d.rights}
             </p>
-            <p>{companyLine || d.companyPending}</p>
+            <p>{companyLine ? `${d.landlord}: ${companyLine}` : d.companyPending}</p>
           </div>
           <a href="#top" className="inline-flex items-center gap-1.5 self-start transition-colors hover:text-ink sm:self-auto">
             <IconArrowUp className="size-3.5" />

@@ -27,20 +27,17 @@ export interface ApartmentAddress {
   district: string | null;
 }
 
+/** Układ apartamentu: studio (bez osobnej sypialni) lub osobna sypialnia + salon. */
+export type ApartmentLayout = "studio" | "bedroomAndLiving";
+
 export interface ApartmentDetails {
+  layout: ApartmentLayout | null;
   maxGuests: number | null;
   bedrooms: number | null;
   beds: number | null;
   bathrooms: number | null;
   areaM2: number | null;
-}
-
-export interface ApartmentRating {
-  /** Ocena w skali Booking.com (0–10). null = brak zweryfikowanej oceny. */
-  score: number | null;
-  reviewCount: number | null;
-  /** Data weryfikacji oceny w formacie ISO, np. "2026-11-18". */
-  verifiedAt: string | null;
+  floor: number | null;
 }
 
 export interface ApartmentFaqItem {
@@ -58,9 +55,11 @@ export interface ApartmentAvailability {
     booking: string | null;
     airbnb: string | null;
   };
-  /** Godzina zameldowania od, np. "15:00". */
+  /** Zameldowanie od / do, np. "16:00" / "23:00". */
   checkInFrom: string | null;
-  /** Godzina wymeldowania do, np. "11:00". */
+  checkInUntil: string | null;
+  /** Wymeldowanie od / do, np. "05:00" / "11:00". */
+  checkOutFrom: string | null;
   checkOutUntil: string | null;
   minNights: number | null;
 }
@@ -72,7 +71,7 @@ export interface Apartment {
   /** Krótka nazwa do przełącznika i nagłówków. */
   shortName: string;
   address: ApartmentAddress;
-  /** Krótki opis (1–3 akapity). null = do uzupełnienia. */
+  /** Opis (akapity oddzielone pustą linią). null = do uzupełnienia. */
   description: Localized<string | null>;
   /** Opis okolicy. null = do uzupełnienia. */
   neighborhood: Localized<string | null>;
@@ -86,10 +85,9 @@ export interface Apartment {
     googleMaps: string;
     /** Adres src z Google Maps → Udostępnij → Umieść mapę. */
     googleMapsEmbed: string | null;
-    booking: string | null;
     airbnb: string | null;
   };
-  rating: ApartmentRating;
+  // Oceny i link do Booking.com / Google Maps: lib/reviews.ts
   /** Pytania i odpowiedzi specyficzne dla tego obiektu. */
   faq: ApartmentFaqItem[];
   availability: ApartmentAvailability;
@@ -155,11 +153,14 @@ const LUDWIKI_4A_PHOTOS: ApartmentPhoto[] = [
   { src: "/apartments/ludwiki-4a/img-7568.webp", width: 2400, height: 1600, alt: { pl: "Budynek z zewnątrz", en: "Building exterior" } },
 ];
 
-const EMPTY_AVAILABILITY: ApartmentAvailability = {
-  icalUrls: { booking: null, airbnb: null },
-  checkInFrom: null,
-  checkOutUntil: null,
-  minNights: null,
+/** Godziny pobytu – takie same w obu apartamentach (potwierdzone przez właściciela). */
+const SHARED_AVAILABILITY: ApartmentAvailability = {
+  icalUrls: { booking: null, airbnb: null }, // TODO: linki iCal (kolejny etap)
+  checkInFrom: "16:00",
+  checkInUntil: "23:00",
+  checkOutFrom: "05:00",
+  checkOutUntil: "11:00",
+  minNights: null, // TODO: nie ustalono
 };
 
 export const APARTMENTS: Record<ApartmentId, Apartment> = {
@@ -171,30 +172,71 @@ export const APARTMENTS: Record<ApartmentId, Apartment> = {
       street: "ul. Grzybowska 37",
       postalCode: null, // TODO: kod pocztowy
       city: "Warszawa",
-      district: null, // TODO: dzielnica (opcjonalnie)
+      district: null,
     },
-    description: { pl: null, en: null }, // TODO: opis PL i EN
-    neighborhood: { pl: null, en: null }, // TODO: opis okolicy PL i EN
+    description: {
+      pl: `Nowoczesne studio o powierzchni 37 m², położone w biznesowym sercu Warszawy, w nowo oddanym budynku o standardzie premium plus.
+
+Apartament łączy eleganckie wnętrze z komfortem i funkcjonalnością. To idealne miejsce zarówno na weekendowy pobyt w stolicy, jak i podróż służbową. Do dyspozycji gości przygotowano wygodną przestrzeń wypoczynkową oraz biurko do pracy zdalnej.
+
+Wyjątkowym atutem są pięknie zaprojektowane części wspólne budynku oraz ogólnodostępny taras o powierzchni około 200 m².
+
+Doskonała lokalizacja w pobliżu stacji metra Rondo ONZ pozwala wygodnie odkrywać Warszawę. Pałac Kultury i Nauki, restauracje, kawiarnie oraz najważniejsze punkty biznesowe miasta znajdują się w zasięgu krótkiego spaceru.`,
+      en: `A modern 37 m² studio in the heart of Warsaw’s business district, set in a newly completed premium-plus building.
+
+The apartment pairs an elegant interior with comfort and practicality, making it an ideal base for a weekend in the capital or a business trip. Guests have a comfortable lounge area and a desk for remote work.
+
+A real highlight is the building’s beautifully designed shared spaces, including a communal terrace of around 200 m².
+
+The excellent location near Rondo ONZ metro station makes it easy to explore Warsaw. The Palace of Culture and Science, restaurants, cafés and the city’s main business addresses are all within a short walk.`,
+    },
+    neighborhood: {
+      pl: "Biznesowe centrum Warszawy. W pobliżu stacja metra Rondo ONZ, a Pałac Kultury i Nauki jest w zasięgu krótkiego spaceru (orientacyjnie ok. 5 minut). W okolicy restauracje, kawiarnie i dobra komunikacja miejska. Apartament nie ma prywatnego miejsca parkingowego – w okolicy są parkingi publiczne, bez gwarancji wolnego miejsca.",
+      en: "Warsaw’s central business district. Rondo ONZ metro station is close by, and the Palace of Culture and Science is a short walk away (roughly 5 minutes). Restaurants, cafés and good public transport are all around. The apartment has no private parking space – there are public car parks nearby, though a free space is not guaranteed.",
+    },
     photos: GRZYBOWSKA_37_PHOTOS,
-    priceFromPLN: null, // TODO: cena od (PLN / noc)
+    priceFromPLN: 250, // cena orientacyjna
     details: {
-      maxGuests: null, // TODO
-      bedrooms: null, // TODO
-      beds: null, // TODO
-      bathrooms: null, // TODO
-      areaM2: null, // TODO
+      layout: "studio", // bez osobnej sypialni
+      maxGuests: 4,
+      bedrooms: null, // studio – brak osobnej sypialni
+      beds: null, // TODO: liczba łóżek (opcjonalnie)
+      bathrooms: null, // TODO: liczba łazienek (opcjonalnie)
+      areaM2: 37,
+      floor: null, // TODO: piętro (opcjonalnie)
     },
-    amenities: [], // TODO: klucze z lib/amenities.ts
+    // Bez klimatyzacji i bez prywatnego parkingu.
+    amenities: ["wifi", "kitchen", "oven", "dishwasher", "washer", "hairDryer", "tv", "workspace", "sharedTerrace", "commonAreas"],
     links: {
       // Link wyszukiwania na podstawie adresu – można zastąpić linkiem do pinezki obiektu.
       googleMaps: googleMapsSearchUrl("Grzybowska 37, Warszawa"),
       googleMapsEmbed: null, // TODO
-      booking: null, // TODO: link do oferty na Booking.com
       airbnb: null, // TODO: link do oferty na Airbnb (opcjonalnie)
     },
-    rating: { score: null, reviewCount: null, verifiedAt: null }, // TODO
-    faq: [], // TODO: pytania specyficzne dla obiektu
-    availability: EMPTY_AVAILABILITY,
+    faq: [
+      {
+        question: { pl: "Czy apartament ma osobną sypialnię?", en: "Does the apartment have a separate bedroom?" },
+        answer: {
+          pl: "Nie. To studio o powierzchni 37 m² – bez osobnej sypialni – dla maksymalnie 4 osób.",
+          en: "No. It is a 37 m² studio without a separate bedroom, for up to 4 guests.",
+        },
+      },
+      {
+        question: { pl: "Czy taras jest prywatny?", en: "Is the terrace private?" },
+        answer: {
+          pl: "Nie. Taras o powierzchni około 200 m² jest wspólny i ogólnodostępny – należy do części wspólnych budynku.",
+          en: "No. The terrace of around 200 m² is a shared, communal space and part of the building’s common areas.",
+        },
+      },
+      {
+        question: { pl: "Czy w apartamencie jest klimatyzacja?", en: "Is there air conditioning?" },
+        answer: {
+          pl: "Nie, apartament Grzybowska 37 nie ma klimatyzacji.",
+          en: "No, the Grzybowska 37 apartment does not have air conditioning.",
+        },
+      },
+    ],
+    availability: SHARED_AVAILABILITY,
   },
   "ludwiki-4a": {
     id: "ludwiki-4a",
@@ -204,29 +246,63 @@ export const APARTMENTS: Record<ApartmentId, Apartment> = {
       street: "ul. Ludwiki 4A",
       postalCode: null, // TODO: kod pocztowy
       city: "Warszawa",
-      district: null, // TODO: dzielnica (opcjonalnie)
+      district: "Wola",
     },
-    description: { pl: null, en: null }, // TODO: opis PL i EN
-    neighborhood: { pl: null, en: null }, // TODO: opis okolicy PL i EN
+    description: {
+      pl: `Elegancki apartament o powierzchni 44 m², położony na 8. piętrze nowoczesnego budynku na warszawskiej Woli.
+
+Jego największym atutem jest wyjątkowy widok na panoramę centrum Warszawy, który można podziwiać bezpośrednio z prywatnego balkonu.
+
+Apartament oferuje oddzielną sypialnię, komfortowy salon z aneksem kuchennym oraz klimatyzację. Starannie urządzone wnętrze z charakterystycznymi niebieskimi akcentami tworzy przyjemną przestrzeń zarówno na krótki, jak i dłuższy pobyt.
+
+Zaledwie krótki spacer dzieli apartament od stacji metra Płocka, skąd można dotrzeć do centrum Warszawy w około 10 minut. W najbliższej okolicy znajdują się restauracje, bary, kawiarnie i sklepy.`,
+      en: `An elegant 44 m² apartment on the 8th floor of a modern building in Warsaw’s Wola district.
+
+Its greatest asset is the exceptional view of the Warsaw city-centre skyline, which you can take in straight from the private balcony.
+
+The apartment has a separate bedroom, a comfortable living room with a kitchenette, and air conditioning. The thoughtfully furnished interior, with its signature blue accents, makes a pleasant space for both short and longer stays.
+
+Płocka metro station is just a short walk away, and from there the city centre is about 10 minutes by metro. Restaurants, bars, cafés and shops are right on the doorstep.`,
+    },
+    neighborhood: {
+      pl: "Warszawska Wola. Krótki spacer do stacji metra Płocka, skąd do centrum Warszawy dojedziesz w około 10 minut (czas orientacyjny). W okolicy restauracje, bary, kawiarnie i sklepy. Apartament nie ma prywatnego miejsca parkingowego – w okolicy są parkingi publiczne, bez gwarancji wolnego miejsca.",
+      en: "Warsaw’s Wola district. A short walk to Płocka metro station, from where the city centre is about 10 minutes away (approximate time). Restaurants, bars, cafés and shops are nearby. The apartment has no private parking space – there are public car parks nearby, though a free space is not guaranteed.",
+    },
     photos: LUDWIKI_4A_PHOTOS,
-    priceFromPLN: null, // TODO: cena od (PLN / noc)
+    priceFromPLN: 250, // cena orientacyjna
     details: {
-      maxGuests: null, // TODO
-      bedrooms: null, // TODO
-      beds: null, // TODO
-      bathrooms: null, // TODO
-      areaM2: null, // TODO
+      layout: "bedroomAndLiving", // oddzielna sypialnia + salon z aneksem kuchennym
+      maxGuests: 4,
+      bedrooms: null, // ujęte w polu layout (1 osobna sypialnia)
+      beds: null, // TODO: liczba łóżek (opcjonalnie)
+      bathrooms: null, // TODO: liczba łazienek (opcjonalnie)
+      areaM2: 44,
+      floor: 8,
     },
-    amenities: [], // TODO: klucze z lib/amenities.ts
+    // Bez prywatnego parkingu.
+    amenities: ["wifi", "airConditioning", "kitchen", "oven", "dishwasher", "washer", "hairDryer", "tv", "privateBalcony", "cityView", "playground"],
     links: {
       googleMaps: googleMapsSearchUrl("Ludwiki 4A, Warszawa"),
       googleMapsEmbed: null, // TODO
-      booking: null, // TODO: link do oferty na Booking.com
       airbnb: null, // TODO: link do oferty na Airbnb (opcjonalnie)
     },
-    rating: { score: null, reviewCount: null, verifiedAt: null }, // TODO
-    faq: [], // TODO: pytania specyficzne dla obiektu
-    availability: EMPTY_AVAILABILITY,
+    faq: [
+      {
+        question: { pl: "Czy balkon jest prywatny?", en: "Is the balcony private?" },
+        answer: {
+          pl: "Tak. Prywatny balkon jest dostępny bezpośrednio z apartamentu, bez dodatkowej opłaty. Z balkonu widać panoramę centrum Warszawy.",
+          en: "Yes. The private balcony is accessed directly from the apartment at no extra charge and looks out over the Warsaw city-centre skyline.",
+        },
+      },
+      {
+        question: { pl: "Na którym piętrze jest apartament?", en: "Which floor is the apartment on?" },
+        answer: {
+          pl: "Apartament znajduje się na 8. piętrze.",
+          en: "The apartment is on the 8th floor.",
+        },
+      },
+    ],
+    availability: SHARED_AVAILABILITY,
   },
 };
 

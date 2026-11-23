@@ -11,9 +11,13 @@ export function formatNumber(value: number, locale: Locale): string {
   return new Intl.NumberFormat(INTL_LOCALE[locale]).format(value);
 }
 
-export function formatScore(value: number, locale: Locale): string {
+/**
+ * Ocena platformy: Booking.com (skala 10) jak na Booking – „10”, „9,8”;
+ * Google (skala 5) zawsze z jednym miejscem po przecinku – „5,0”, „4,8”.
+ */
+export function formatRating(value: number, scale: 10 | 5, locale: Locale): string {
   return new Intl.NumberFormat(INTL_LOCALE[locale], {
-    minimumFractionDigits: 1,
+    minimumFractionDigits: scale === 5 ? 1 : 0,
     maximumFractionDigits: 1,
   }).format(value);
 }

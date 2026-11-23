@@ -8,16 +8,24 @@ import type { Localized } from "@/lib/i18n/config";
  * (components/amenity-icon.tsx), a następnie użyj klucza w lib/apartments.ts.
  */
 export const AMENITIES = {
-  wifi: { pl: "Szybkie Wi‑Fi", en: "Fast Wi‑Fi" },
-  kitchen: { pl: "W pełni wyposażona kuchnia", en: "Fully equipped kitchen" },
-  coffeeMachine: { pl: "Ekspres do kawy", en: "Coffee machine" },
+  wifi: { pl: "Wi‑Fi", en: "Wi‑Fi" },
   airConditioning: { pl: "Klimatyzacja", en: "Air conditioning" },
-  heating: { pl: "Ogrzewanie", en: "Heating" },
+  kitchen: { pl: "Wyposażona kuchnia", en: "Equipped kitchen" },
+  oven: { pl: "Piekarnik", en: "Oven" },
+  dishwasher: { pl: "Zmywarka", en: "Dishwasher" },
   washer: { pl: "Pralka", en: "Washing machine" },
+  hairDryer: { pl: "Suszarka do włosów", en: "Hair dryer" },
   tv: { pl: "Telewizor", en: "TV" },
-  workspace: { pl: "Miejsce do pracy", en: "Dedicated workspace" },
+  workspace: { pl: "Biurko do pracy", en: "Work desk" },
+  privateBalcony: { pl: "Prywatny balkon", en: "Private balcony" },
+  cityView: { pl: "Widok na centrum Warszawy", en: "View of central Warsaw" },
+  sharedTerrace: { pl: "Dostęp do wspólnego tarasu (ok. 200 m²)", en: "Access to a shared terrace (approx. 200 m²)" },
+  commonAreas: { pl: "Eleganckie części wspólne", en: "Elegant common areas" },
+  playground: { pl: "Plac zabaw dla dzieci", en: "Children’s playground" },
+  // Pozycje dostępne w katalogu, obecnie nieprzypisane do żadnego apartamentu:
+  coffeeMachine: { pl: "Ekspres do kawy", en: "Coffee machine" },
+  heating: { pl: "Ogrzewanie", en: "Heating" },
   elevator: { pl: "Winda", en: "Elevator" },
-  parking: { pl: "Parking", en: "Parking" },
   balcony: { pl: "Balkon", en: "Balcony" },
   selfCheckIn: { pl: "Samodzielne zameldowanie", en: "Self check‑in" },
 } satisfies Record<string, Localized>;

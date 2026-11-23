@@ -262,6 +262,48 @@ export const IconBalcony = (p: IconProps) => (
   </Svg>
 );
 
+export const IconOven = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="3.5" y="4" width="17" height="16" rx="2" />
+    <path d="M3.5 8.5h17M7 6.25h.01M10 6.25h.01" />
+    <rect x="7" y="11.5" width="10" height="5.5" rx="1" />
+  </Svg>
+);
+
+export const IconDishwasher = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="4.5" y="3" width="15" height="18" rx="2" />
+    <path d="M4.5 7.5h15M8 5.25h.01M8.5 17.5h7M9 15a3 3 0 0 1 6 0" />
+  </Svg>
+);
+
+export const IconHairDryer = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="9" cy="9" r="5" />
+    <circle cx="9" cy="9" r="1.6" />
+    <path d="M13.6 7l6.4-1.5v7L13.6 11M8 14l-1.2 6.5h3L11 13.8" />
+  </Svg>
+);
+
+export const IconTerrace = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3 20.5h18M5 20.5v-4h14v4M12 16.5V9" />
+    <path d="M12 11c-2.6 0-4.2-1.6-4.2-4.2 2.6 0 4.2 1.6 4.2 4.2zM12 10c0-2.6 1.6-4.2 4.2-4.2 0 2.6-1.6 4.2-4.2 4.2z" />
+  </Svg>
+);
+
+export const IconSkyline = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3 20.5h18M5 20.5v-7h3v7M8 20.5V8h4v12.5M12 20.5v-9h3v9M15 20.5V5h4v15.5M17 5V3" />
+  </Svg>
+);
+
+export const IconPlayground = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3.5 20.5L7.5 4h9l4 16.5M7.5 4h9M10 4v9M14 4v9M9 13h6" />
+  </Svg>
+);
+
 export const IconKey = (p: IconProps) => (
   <Svg {...p}>
     <circle cx="8" cy="15.5" r="3.8" />

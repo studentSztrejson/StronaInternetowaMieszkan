@@ -74,7 +74,7 @@ export function Contact({ dict, apartment }: SectionProps) {
     <section id={SECTION_IDS.contact} aria-labelledby="contact-title" className="bg-ink text-white">
       <Container className="py-20 sm:py-28">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
-          <div>
+          <div className="min-w-0">
             <Eyebrow className="text-[#a9c4e2]">{d.eyebrow}</Eyebrow>
             <h2 id="contact-title" className="mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
               {d.title}
@@ -91,9 +91,9 @@ export function Contact({ dict, apartment }: SectionProps) {
             </div>
           </div>
 
-          <div>
+          <div className="min-w-0">
             <ul className="grid gap-3 sm:grid-cols-2">
-              <li className="sm:col-span-2">
+              <li className="min-w-0 sm:col-span-2">
                 <ContactOption
                   featured
                   icon={IconCalendar}
@@ -106,7 +106,7 @@ export function Contact({ dict, apartment }: SectionProps) {
                   newTabLabel={dict.common.newTab}
                 />
               </li>
-              <li>
+              <li className="min-w-0">
                 <ContactOption
                   icon={IconMail}
                   label={d.email}
@@ -115,7 +115,7 @@ export function Contact({ dict, apartment }: SectionProps) {
                   newTabLabel={dict.common.newTab}
                 />
               </li>
-              <li>
+              <li className="min-w-0">
                 <ContactOption
                   icon={IconPhone}
                   label={d.phone}
@@ -124,7 +124,7 @@ export function Contact({ dict, apartment }: SectionProps) {
                   newTabLabel={dict.common.newTab}
                 />
               </li>
-              <li className="sm:col-span-2">
+              <li className="min-w-0 sm:col-span-2">
                 <ContactOption
                   icon={IconChat}
                   label={d.whatsapp}

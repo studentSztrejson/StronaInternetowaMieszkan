@@ -1,114 +1,97 @@
 # Dane do uzupełnienia
 
-Lista prawdziwych informacji potrzebnych do ukończenia strony. Dopóki pole jest puste, strona pokazuje neutralny stan „wkrótce / do uzupełnienia” – nic nie jest zmyślone.
+Lista informacji, których **nadal brakuje**. Dopóki pole jest puste, strona pokazuje neutralny stan „wkrótce / do uzupełnienia” albo pomija daną informację – nic nie jest zmyślone.
 
-Każdą pozycję można przesłać w dowolnej formie (np. e-mail, dokument), a zostanie wpisana do kodu. Gdzie wpisać dane samodzielnie – podano przy każdej sekcji.
+Dane już wdrożone (opisy PL/EN, metraż, liczba gości, ceny „od”, udogodnienia, kontakt, zasady pobytu, „O nas”, dane wynajmującego) znajdują się w `lib/apartments.ts`, `lib/site.ts` i `lib/i18n/`. Oceny i linki do opinii: `lib/reviews.ts`.
+
+Każdą pozycję można przesłać w dowolnej formie, a zostanie wpisana do kodu.
 
 ---
 
-## 1. Kontakt i dane firmy – `lib/site.ts`
+## 1. Opinie gości – `lib/reviews.ts`
 
-| Pole | Opis | Uwagi |
-| --- | --- | --- |
-| `contact.email` | Adres e-mail do rezerwacji | Uruchamia przyciski „E-mail” i „Zapytaj o rezerwację” |
-| `contact.phone` | Numer telefonu | Format międzynarodowy, np. `+48 600 000 000` |
-| `contact.whatsapp` | Numer WhatsApp | Może być taki sam jak telefon |
-| `company.legalName` | Nazwa firmy lub właściciela | Wyświetlana w stopce |
-| `company.taxId` | NIP | Jeśli dotyczy |
-| `company.address` | Adres rejestrowy | Jeśli ma być w stopce |
-| `url` | Docelowa domena strony | np. `https://premiumblue.pl` – do metadanych i SEO |
+### Do weryfikacji przed publikacją
 
-## 2. Dane każdego apartamentu – `lib/apartments.ts`
+- [ ] **Ocena Grzybowska 37 na Booking.com** – podana wartość 9,8/10 i 17 opinii wymaga ponownego sprawdzenia (automatyczne odczytanie Booking.com nie jest możliwe). Do tego czasu strona pokazuje tylko zachętę do sprawdzenia opinii na Booking.com – bez liczb.
 
-Potrzebne **osobno dla Grzybowska 37 i Ludwiki 4A**:
+### Jak ręcznie zaktualizować ocenę Booking.com?
 
-### Podstawowe
-- [ ] Kod pocztowy
-- [ ] Dzielnica (opcjonalnie)
-- [ ] Opis apartamentu **PL** (1–3 akapity; akapity oddziel pustą linią)
-- [ ] Opis apartamentu **EN**
-- [ ] Opis okolicy PL i EN (np. co jest w pobliżu, komunikacja)
-- [ ] Cena „od” w PLN za noc (lub decyzja: „cena na zapytanie”)
+Wszystkie oceny Booking.com są w **jednym miejscu**: plik `lib/reviews.ts`, blok `const BOOKING` (oznaczony nagłówkiem „BOOKING.COM – JEDYNE MIEJSCE DO RĘCZNEJ AKTUALIZACJI OCEN”).
 
-### Parametry
-- [ ] Maksymalna liczba gości
-- [ ] Liczba sypialni
-- [ ] Liczba łóżek
-- [ ] Liczba łazienek
-- [ ] Powierzchnia w m²
+1. Otwórz ofertę apartamentu na Booking.com i odczytaj ocenę oraz liczbę opinii.
+2. W `lib/reviews.ts` znajdź wpis apartamentu (`"grzybowska-37"` lub `"ludwiki-4a"`) i zmień trzy pola:
 
-### Udogodnienia
-Wybierz z listy (pole `amenities`), np. `["wifi", "kitchen", "airConditioning"]`:
+   ```ts
+   "ludwiki-4a": {
+     url: "https://www.booking.com/hotel/pl/premium-blue-apartment-ludwiki.pl.html",
+     rating: 10,              // ocena w skali 10, z kropką: 9.8 (nie 9,8)
+     reviewCount: 3,          // liczba opinii
+     updatedAt: "2026-11-23", // data sprawdzenia: RRRR-MM-DD
+   },
+   ```
 
-| Klucz | PL | EN |
-| --- | --- | --- |
-| `wifi` | Szybkie Wi‑Fi | Fast Wi‑Fi |
-| `kitchen` | W pełni wyposażona kuchnia | Fully equipped kitchen |
-| `coffeeMachine` | Ekspres do kawy | Coffee machine |
-| `airConditioning` | Klimatyzacja | Air conditioning |
-| `heating` | Ogrzewanie | Heating |
-| `washer` | Pralka | Washing machine |
-| `tv` | Telewizor | TV |
-| `workspace` | Miejsce do pracy | Dedicated workspace |
-| `elevator` | Winda | Elevator |
-| `parking` | Parking | Parking |
-| `balcony` | Balkon | Balcony |
-| `selfCheckIn` | Samodzielne zameldowanie | Self check‑in |
+3. Zapisz plik. Zmiana pojawi się automatycznie w skrócie ocen pod nazwą apartamentu i w sekcji „Opinie naszych gości” (data jako „Stan na …”).
+4. Aby **ukryć** ocenę (np. do czasu weryfikacji), wpisz `rating: null`, `reviewCount: null`, `updatedAt: null`.
 
-Brakuje czegoś? Podaj nazwę – zostanie dodana do katalogu (`lib/amenities.ts`) razem z ikoną.
+Oceny nie odświeżają się automatycznie – sprawdzaj je co jakiś czas. Stan obecny: Ludwiki 4A 10/10, 3 opinie (23.11.2026); Grzybowska 37 – do weryfikacji (dla Grzybowskiej: `rating: 9.8, reviewCount: 17` po potwierdzeniu).
 
-### Linki
-- [ ] Link do oferty na **Booking.com**
-- [ ] Link do oferty na **Airbnb** (opcjonalnie)
-- [ ] Link do pinezki w Google Maps (opcjonalnie – obecnie link wyszukuje adres)
-- [ ] Kod mapy do osadzenia: Google Maps → Udostępnij → Umieść mapę → skopiuj sam adres z `src="..."` (pole `googleMapsEmbed`)
+### Opinie tekstowe (opcjonalnie)
 
-### Ocena (tylko zweryfikowana, z Booking.com)
-- [ ] Ocena (np. `9.1`)
-- [ ] Liczba opinii
-- [ ] Data sprawdzenia (np. `2026-11-18`)
+Wybrane opinie tekstowe można dodać ręcznie w `lib/reviews.ts` → `const FEATURED` – **wyłącznie** jeśli masz prawo lub zgodę na ich publikację (pole `publicationPermission` z opisem zgody). Nie kopiuj komentarzy z Booking.com bez takiej zgody. Dopóki lista jest pusta, sekcja pokazuje tylko oceny i przyciski do oryginalnych opinii.
 
-Treść opinii nie będzie kopiowana – strona pokazuje tylko ocenę i link do oferty.
+### Google Maps – przyszła integracja (jeszcze nie uruchomiona)
 
-### FAQ specyficzne dla apartamentu (opcjonalnie)
-- [ ] Pytania i odpowiedzi dotyczące tylko tego obiektu (PL i EN), np. dojazd, piętro, parking pod budynkiem.
+Przygotowane są typy danych, karta Google w sekcji opinii, miejsce w skrócie ocen oraz karta pojedynczej recenzji. Dopóki nie ma wizytówek, nic związanego z Google nie jest wyświetlane i strona nie wykonuje żadnych zapytań do Google.
 
-### Dane na przyszłe etapy (kalendarz i synchronizacja)
-- [ ] Link iCal z Booking.com
-- [ ] Link iCal z Airbnb
-- [ ] Godzina zameldowania od / wymeldowania do
-- [ ] Minimalna liczba nocy
+Potrzebne w przyszłości:
 
-## 3. Zdjęcia
+1. [ ] Zweryfikowane wizytówki Google Maps (Profil Firmy w Google) dla obu apartamentów.
+2. [ ] **Place ID** każdej wizytówki → `lib/reviews.ts`, blok `const GOOGLE`, pole `placeId`.
+3. [ ] **Link Google Maps** do wizytówki → to samo miejsce, pole `mapsUrl` (już samo to pokaże kartę Google z przyciskiem „Zobacz opinie w Google Maps”).
+4. [ ] Projekt Google Cloud z włączonym **Places API (New)** i rozliczeniami.
+5. [ ] **Klucz API** ograniczony do Places API i serwera strony, z limitami dziennymi. Klucz trafia wyłącznie do zmiennej środowiskowej na serwerze (np. `GOOGLE_PLACES_API_KEY` w `.env.local` – plik jest w `.gitignore`), **nigdy do kodu ani repozytorium**.
+6. [ ] Weryfikacja aktualnych zasad Google Maps Platform (EOG / Polska): wymagane oznaczenia „Google Maps” i atrybucje autorów, linki do oryginalnych recenzji, zasady przechowywania i buforowania danych, koszty i limity wywołań.
 
-Stan na teraz:
+Uwagi do integracji (osobny, niewielki etap):
+- Pobieranie po stronie serwera w funkcji `getGoogleReviews()` w `lib/reviews.ts`, z buforowaniem (`use cache` + `cacheLife`) – bez zapytania przy każdym wyświetleniu strony.
+- API zwraca tylko ograniczoną liczbę recenzji (nie wszystkie) – nie należy obiecywać pełnej listy.
+- Treści recenzji Google nie są zapisywane w plikach projektu ani w bazie danych.
+- Oceny Booking.com (skala 10) i Google (skala 5) są pokazywane osobno – nie łączymy ich w jedną średnią.
+
+## 2. Regulamin i FAQ – `lib/site.ts`
+
+Nieustalone kwestie (strona pokazuje „Treść w przygotowaniu” / „Odpowiedź zostanie wkrótce uzupełniona”):
+
+- [ ] Rezerwacja i potwierdzenie – jak wygląda potwierdzenie rezerwacji bezpośredniej
+- [ ] Płatności – formy i terminy płatności, ewentualna kaucja
+- [ ] Anulowanie i zmiany rezerwacji
+- [ ] Odpowiedzialność i szkody
+- [ ] Ochrona danych osobowych (RODO) – polityka prywatności
+- [ ] Postanowienia końcowe
+- [ ] FAQ: sposób przekazania kluczy
+- [ ] FAQ: faktury (czy są wystawiane)
+- [ ] Opcjonalnie: cisza nocna, minimalna długość pobytu
+
+Regulamin i polityka prywatności powinny zostać zweryfikowane prawnie.
+
+## 3. Dane apartamentów – `lib/apartments.ts`
+
+- [ ] Kody pocztowe obu adresów
+- [ ] Opcjonalnie: liczba łóżek i łazienek (obie)
+- [ ] Opcjonalnie: piętro apartamentu Grzybowska 37
+- [ ] Opcjonalnie: linki do ofert na Airbnb
+- [ ] Opcjonalnie: kod mapy do osadzenia – Google Maps → Udostępnij → Umieść mapę → adres z `src="..."` (pole `googleMapsEmbed`); bez niego działa przycisk „Otwórz w Google Maps”
+
+## 4. Zdjęcia
 
 - [x] **Ludwiki 4A** – 19 zdjęć z profesjonalnej sesji (gotowe).
 - [ ] **Grzybowska 37** – 13 zdjęć **tymczasowych** (576×768 px, pionowe). Potrzebna profesjonalna sesja: najlepiej 15–25 zdjęć **poziomych**, min. 2000 px szerokości.
 
 Instrukcja wymiany zdjęć: [README.md → „Jak wymienić zdjęcia apartamentu w przyszłości”](README.md#jak-wymienić-zdjęcia-apartamentu-w-przyszłości).
 
-Do sprawdzenia przez właściciela: kolejność zdjęć i wybór zdjęć głównych (zaproponowane na podstawie zawartości fotografii) oraz opisy `alt` w `lib/apartments.ts`.
+## 5. Pozostałe
 
-## 4. FAQ ogólne – `lib/site.ts` (`GENERAL_FAQ`)
-
-Pytania są przygotowane – potrzebne są odpowiedzi PL i EN:
-- [ ] Godziny zameldowania i wymeldowania
-- [ ] Sposób przekazania kluczy
-- [ ] Jak dokonać rezerwacji
-- [ ] Anulowanie i zmiana rezerwacji
-- [ ] Parking w pobliżu
-- [ ] Faktury
-- [ ] Zwierzęta
-
-Można dodać, usunąć lub zmienić pytania.
-
-## 5. Regulamin – `lib/site.ts` (`TERMS`)
-
-Treść (PL i EN) dla rozdziałów: rezerwacja i potwierdzenie, płatności, zameldowanie i wymeldowanie, zasady pobytu, anulowanie i zmiany rezerwacji, odpowiedzialność i szkody, ochrona danych osobowych, postanowienia końcowe. Lista rozdziałów może się zmienić. Regulamin i polityka prywatności powinny zostać zweryfikowane prawnie.
-
-## 6. Teksty marki – `lib/i18n/pl.ts`, `lib/i18n/en.ts`
-
-- [ ] Historia marki / informacje o gospodarzach do sekcji „O nas” (PL i EN)
-- [ ] Akceptacja lub zmiana haseł: „Dwa adresy w Warszawie. Jeden standard.”, „Butikowe apartamenty na krótki pobyt”
-- [ ] Logo (obecnie tymczasowy znak „PB”), favicon, ewentualnie zdjęcie do udostępnień w mediach społecznościowych
+- [ ] `SITE.url` w `lib/site.ts` – docelowa domena strony (metadane, SEO)
+- [ ] Opcjonalnie: adres wynajmującego w stopce (`company.address`) – tylko jeśli ma być publikowany
+- [ ] Logo (obecnie tymczasowy znak „PB”), favicon, grafika do udostępnień w mediach społecznościowych
+- [ ] Kolejne etapy: linki iCal z Booking.com / Airbnb (kalendarz dostępności)

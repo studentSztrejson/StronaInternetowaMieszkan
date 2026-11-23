@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { IconArrowUpRight, IconBuilding } from "@/components/icons";
-import { PendingBadge, Section } from "@/components/ui";
+import { Section } from "@/components/ui";
 import { apartmentPath, formatAddress, getAllApartments } from "@/lib/apartments";
 import { SECTION_IDS, type SectionProps } from "./types";
 
@@ -14,9 +14,6 @@ export function About({ lang, dict, apartment: current }: SectionProps) {
           {d.paragraphs.map((paragraph, i) => (
             <p key={i}>{paragraph}</p>
           ))}
-          <p>
-            <PendingBadge>{d.storyPending}</PendingBadge>
-          </p>
         </div>
 
         <div>

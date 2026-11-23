@@ -4,33 +4,56 @@ import {
   IconArrowUpRight,
   IconBath,
   IconBed,
+  IconBuilding,
   IconCalendar,
   IconMapPin,
-  IconStar,
   IconUsers,
   type IconProps,
 } from "@/components/icons";
+import { RatingSummary } from "@/components/reviews/rating-summary";
 import { buttonClasses, Container, ExternalLink, PendingBadge } from "@/components/ui";
 import { formatAddress, type ApartmentDetails } from "@/lib/apartments";
-import { formatNumber, formatScore, plural } from "@/lib/format";
+import { formatNumber } from "@/lib/format";
+import { getApartmentReviews } from "@/lib/reviews";
 import { SECTION_IDS, type SectionProps } from "./types";
 
 const DETAIL_ICONS: Record<keyof ApartmentDetails, ComponentType<IconProps>> = {
+  layout: IconBed,
   maxGuests: IconUsers,
   bedrooms: IconBed,
   beds: IconBed,
   bathrooms: IconBath,
   areaM2: IconArea,
+  floor: IconBuilding,
+};
+
+/** Liczba kolumn zależna od liczby parametrów – bez pustych komórek w siatce. */
+const DETAIL_GRID: Record<number, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-2 sm:grid-cols-4",
+  5: "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5",
+  6: "grid-cols-2 sm:grid-cols-3",
+  7: "grid-cols-2 sm:grid-cols-4",
 };
 
 export function Overview({ lang, dict, apartment }: SectionProps) {
   const d = dict.overview;
-  const details = (Object.keys(apartment.details) as (keyof ApartmentDetails)[])
-    .map((key) => ({ key, value: apartment.details[key] }))
-    .filter((item): item is { key: keyof ApartmentDetails; value: number } => item.value !== null);
+  const details = (Object.keys(apartment.details) as (keyof ApartmentDetails)[]).flatMap((key) => {
+    const value = apartment.details[key];
+    if (value === null) return [];
+    const text =
+      key === "layout"
+        ? d.layouts[value as keyof typeof d.layouts]
+        : key === "areaM2"
+          ? `${formatNumber(value as number, lang)} m²`
+          : formatNumber(value as number, lang);
+    return [{ key, text }];
+  });
 
   const description = apartment.description[lang];
-  const { score, reviewCount } = apartment.rating;
+  const reviews = getApartmentReviews(apartment.id);
 
   return (
     <section aria-labelledby="overview-title" className="bg-white">
@@ -50,13 +73,15 @@ export function Overview({ lang, dict, apartment }: SectionProps) {
             >
               {apartment.name}
             </h2>
+            {/* Skrót ocen (Booking.com / Google) – bez zweryfikowanych danych nie renderuje niczego. */}
+            <RatingSummary lang={lang} dict={dict} reviews={reviews} />
 
             {details.length > 0 ? (
               <dl
                 aria-label={d.detailsLabel}
-                className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3 lg:grid-cols-5"
+                className={`mt-8 grid ${DETAIL_GRID[details.length] ?? DETAIL_GRID[7]} gap-px overflow-hidden rounded-xl border border-line bg-line`}
               >
-                {details.map(({ key, value }) => {
+                {details.map(({ key, text }) => {
                   const Icon = DETAIL_ICONS[key];
                   return (
                     <div key={key} className="flex flex-col-reverse bg-white p-4">
@@ -64,9 +89,7 @@ export function Overview({ lang, dict, apartment }: SectionProps) {
                         <Icon className="size-4 text-accent" />
                         {d.details[key]}
                       </dt>
-                      <dd className="text-xl font-medium tracking-tight text-ink">
-                        {key === "areaM2" ? `${formatNumber(value, lang)} m²` : formatNumber(value, lang)}
-                      </dd>
+                      <dd className="text-xl font-medium tracking-tight text-ink">{text}</dd>
                     </div>
                   );
                 })}
@@ -99,39 +122,25 @@ export function Overview({ lang, dict, apartment }: SectionProps) {
               ) : (
                 <p className="text-2xl font-medium tracking-tight text-ink">{d.priceOnRequest}</p>
               )}
-
-              <p className="mt-3 flex items-center gap-2 text-sm text-muted">
-                <IconStar className="size-4 text-accent" />
-                {score !== null ? (
-                  <span>
-                    <span className="font-medium text-ink">{formatScore(score, lang)}</span>
-                    <span> / 10 · {d.ratingLabel}</span>
-                    {reviewCount !== null ? (
-                      <span> · {plural(dict.reviews.reviewCount, reviewCount, lang)}</span>
-                    ) : null}
-                  </span>
-                ) : (
-                  <span>{d.ratingPending}</span>
-                )}
-              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted">{d.priceNote}</p>
 
               <div className="my-6 h-px bg-line" />
+
+              <p className="mb-4 text-sm font-medium text-ink">{d.directBooking}</p>
 
               <div className="flex flex-col gap-3">
                 <a href={`#${SECTION_IDS.contact}`} className={buttonClasses("accent", "lg", "w-full")}>
                   <IconCalendar className="size-5" />
                   {d.availabilityCta}
                 </a>
-                {apartment.links.booking ? (
-                  <ExternalLink
-                    href={apartment.links.booking}
-                    newTabLabel={dict.common.newTab}
-                    className={buttonClasses("secondary", "lg", "w-full")}
-                  >
-                    {d.bookingCta}
-                    <IconArrowUpRight className="size-4" />
-                  </ExternalLink>
-                ) : null}
+                <ExternalLink
+                  href={reviews.booking.url}
+                  newTabLabel={dict.common.newTab}
+                  className={buttonClasses("secondary", "lg", "w-full")}
+                >
+                  {d.bookingCta}
+                  <IconArrowUpRight className="size-4" />
+                </ExternalLink>
               </div>
             </div>
           </aside>
